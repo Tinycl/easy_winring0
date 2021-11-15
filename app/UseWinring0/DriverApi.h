@@ -20,7 +20,7 @@ extern BOOL gIsNT;
 extern BOOL gIsCpuid;
 extern BOOL gIsMsr;
 extern BOOL gIsTsc;
-extern BOOL gInitDll;
+
 
 extern DWORD gDriverType;
 

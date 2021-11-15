@@ -35,13 +35,13 @@ BYTE gPciMaxNumberOfBus = 255;
 
 HANDLE gHandle;
 
-BOOL gIsNT;
-BOOL gIsCpuid;
-BOOL gIsMsr;
-BOOL gIsTsc;
-BOOL gInitDll;
+BOOL gIsNT = true;
+BOOL gIsCpuid = true;
+BOOL gIsMsr = true;
+BOOL gIsTsc = true;
 
-DWORD gDriverType;
+
+DWORD gDriverType = true;
 
 
 
