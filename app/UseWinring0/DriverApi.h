@@ -12,6 +12,8 @@
 #include <Windows.h>
 
 
+//DWORD_PTR X64 is 64 bit, X86 is 64 bit
+
 #define _PHYSICAL_MEMORY_SUPPORT
 
 extern HANDLE gHandle;
@@ -91,6 +93,12 @@ WINAPI RdmsrTx(
 	DWORD_PTR threadAffinityMask
 );
 
+//
+// group is numanode
+//
+BOOL WINAPI RdmsrTxGroup(DWORD index, PDWORD eax, PDWORD edx, DWORD_PTR threadAffinityMask, WORD group);
+
+
 //-----------------------------------------------------------------------------
 // RdmsrPx
 //-----------------------------------------------------------------------------
@@ -123,6 +131,9 @@ WINAPI WrmsrTx(
 	DWORD_PTR threadAffinityMask
 );
 
+//
+BOOL WINAPI WrmsrTxGroup(DWORD index, DWORD eax, DWORD edx, DWORD_PTR threadAffinityMask, WORD group);
+
 //-----------------------------------------------------------------------------
 // WrmsrPx
 //-----------------------------------------------------------------------------
@@ -154,6 +165,9 @@ WINAPI RdpmcTx(
 	PDWORD edx,						// bit 32-63
 	DWORD_PTR threadAffinityMask
 );
+
+//
+BOOL WINAPI RdpmcTxGroup(DWORD index, PDWORD eax, PDWORD edx, DWORD_PTR threadAffinityMask, WORD group);
 
 //-----------------------------------------------------------------------------
 // RdmsrPx
@@ -191,6 +205,9 @@ WINAPI CpuidTx(
 	DWORD_PTR threadAffinityMask
 );
 
+//
+BOOL WINAPI CpuidTxGroup(DWORD index, PDWORD eax, PDWORD ebx, PDWORD ecx, PDWORD edx, DWORD_PTR threadAffinityMask, WORD group);
+
 //-----------------------------------------------------------------------------
 // CpuidPx
 //-----------------------------------------------------------------------------
@@ -223,6 +240,9 @@ WINAPI RdtscTx(
 	DWORD_PTR threadAffinityMask
 );
 
+//
+BOOL WINAPI RdtscTxGroup(PDWORD eax, PDWORD edx, DWORD_PTR threadAffinityMask, WORD group);
+
 //-----------------------------------------------------------------------------
 // RdmsrPx
 //-----------------------------------------------------------------------------
@@ -247,6 +267,8 @@ WINAPI HltTx(
 	DWORD_PTR threadAffinityMask
 );
 
+//
+BOOL WINAPI HltTxGroup(DWORD_PTR threadAffinityMask, WORD group);
 //-----------------------------------------------------------------------------
 // HltPx
 //-----------------------------------------------------------------------------

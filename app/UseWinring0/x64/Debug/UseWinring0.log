@@ -1,0 +1,12 @@
+﻿  DriverApi.c
+  DriverManage.c
+  Generating Code...
+  DriverBinFile.cpp
+  Source.cpp
+E:\vs\easy_winring0\app\UseWinring0\Source.cpp(64,31): warning C4334: '<<': result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+E:\vs\easy_winring0\app\UseWinring0\Source.cpp(68,11): warning C4477: 'printf' : format string '%d' requires an argument of type 'int', but variadic argument 1 has type 'unsigned __int64'
+E:\vs\easy_winring0\app\UseWinring0\Source.cpp(68,11): message : consider using '%lld' in the format string
+E:\vs\easy_winring0\app\UseWinring0\Source.cpp(68,11): message : consider using '%Id' in the format string
+E:\vs\easy_winring0\app\UseWinring0\Source.cpp(68,11): message : consider using '%I64d' in the format string
+  Generating Code...
+  UseWinring0.vcxproj -> E:\vs\easy_winring0\app\x64\Debug\UseWinring0.exe

@@ -35,13 +35,13 @@ BYTE gPciMaxNumberOfBus = 255;
 
 HANDLE gHandle;
 
-BOOL gIsNT = true;
-BOOL gIsCpuid = true;
-BOOL gIsMsr = true;
-BOOL gIsTsc = true;
+BOOL gIsNT = TRUE;
+BOOL gIsCpuid = TRUE;
+BOOL gIsMsr = TRUE;
+BOOL gIsTsc = TRUE;
 
 
-DWORD gDriverType = true;
+DWORD gDriverType = TRUE;
 
 
 
@@ -181,6 +181,37 @@ BOOL WINAPI RdmsrTx(DWORD index, PDWORD eax, PDWORD edx, DWORD_PTR threadAffinit
 	return result;
 }
 
+BOOL WINAPI RdmsrTxGroup(DWORD index, PDWORD eax, PDWORD edx, DWORD_PTR threadAffinityMask, WORD group)
+{
+	BOOL		result = FALSE;
+	HANDLE		hThread = NULL;
+	GROUP_AFFINITY group_affinity, last_group_affinity;
+	group_affinity.Group = group;
+	group_affinity.Mask = threadAffinityMask;
+
+
+	if (gIsNT)
+	{
+		hThread = GetCurrentThread();
+		if (!SetThreadGroupAffinity(hThread, &group_affinity, &last_group_affinity))
+		{
+			return FALSE;
+		}
+	}
+
+	result = Rdmsr(index, eax, edx);
+
+	if (gIsNT)
+	{
+		if (!SetThreadGroupAffinity(hThread, &last_group_affinity, NULL))
+		{
+			return FALSE;
+		}
+	}
+
+	return result;
+}
+
 BOOL WINAPI RdmsrPx(DWORD index, PDWORD eax, PDWORD edx, DWORD_PTR processAffinityMask)
 {
 	BOOL		result = FALSE;
@@ -271,6 +302,37 @@ BOOL WINAPI WrmsrTx(DWORD index, DWORD eax, DWORD edx, DWORD_PTR threadAffinityM
 	if(gIsNT)
 	{
 		SetThreadAffinityMask(hThread, mask);
+	}
+
+	return result;
+}
+
+
+BOOL WINAPI WrmsrTxGroup(DWORD index, DWORD eax, DWORD edx, DWORD_PTR threadAffinityMask, WORD group)
+{
+	BOOL		result = FALSE;
+	HANDLE		hThread = NULL;
+	GROUP_AFFINITY group_affinity, last_group_affinity;
+	group_affinity.Group = group;
+	group_affinity.Mask = threadAffinityMask;
+
+	if (gIsNT)
+	{
+		hThread = GetCurrentThread();
+		if (!SetThreadGroupAffinity(hThread, &group_affinity, &last_group_affinity))
+		{
+			return FALSE;
+		}
+	}
+
+	result = Wrmsr(index, eax, edx);
+
+	if (gIsNT)
+	{
+		if (!SetThreadGroupAffinity(hThread, &last_group_affinity, NULL))
+		{
+			return FALSE;
+		}
 	}
 
 	return result;
@@ -372,6 +434,37 @@ BOOL WINAPI RdpmcTx(DWORD index, PDWORD eax, PDWORD edx, DWORD_PTR threadAffinit
 	return result;
 }
 
+BOOL WINAPI RdpmcTxGroup(DWORD index, PDWORD eax, PDWORD edx, DWORD_PTR threadAffinityMask, WORD group)
+{
+	BOOL		result = FALSE;
+	HANDLE		hThread = NULL;
+	GROUP_AFFINITY group_affinity, last_group_affinity;
+	group_affinity.Group = group;
+	group_affinity.Mask = threadAffinityMask;
+
+	if (gIsNT)
+	{
+		hThread = GetCurrentThread();
+		if (!SetThreadGroupAffinity(hThread, &group_affinity, &last_group_affinity))
+		{
+			return FALSE;
+		}
+	}
+
+	result = Rdpmc(index, eax, edx);
+
+	if (gIsNT)
+	{
+		if (!SetThreadGroupAffinity(hThread, &last_group_affinity, NULL))
+		{
+			return FALSE;
+		}
+	}
+
+	return result;
+}
+
+
 BOOL WINAPI RdpmcPx(DWORD index, PDWORD eax, PDWORD edx, DWORD_PTR processAffinityMask)
 {
 	BOOL		result = FALSE;
@@ -442,6 +535,39 @@ BOOL WINAPI CpuidTx(DWORD index, PDWORD eax, PDWORD ebx, PDWORD ecx, PDWORD edx,
 	return result;
 }
 
+
+
+BOOL WINAPI CpuidTxGroup(DWORD index, PDWORD eax, PDWORD ebx, PDWORD ecx, PDWORD edx, DWORD_PTR threadAffinityMask, WORD group)
+{
+	BOOL		result = FALSE;
+	HANDLE		hThread = NULL;
+	GROUP_AFFINITY group_affinity, last_group_affinity;
+	group_affinity.Group = group;
+	group_affinity.Mask = threadAffinityMask;
+
+	if (gIsNT)
+	{
+		hThread = GetCurrentThread();
+		if (!SetThreadGroupAffinity(hThread, &group_affinity, &last_group_affinity))
+		{
+			return FALSE;
+		}
+	}
+
+	result = Cpuid(index, eax, ebx, ecx, edx);
+
+	if (gIsNT)
+	{
+		if (!SetThreadGroupAffinity(hThread, &last_group_affinity, NULL))
+		{
+			return FALSE;
+		}
+	}
+
+	return result;
+}
+
+
 BOOL WINAPI CpuidPx(DWORD index, PDWORD eax, PDWORD ebx, PDWORD ecx, PDWORD edx, DWORD_PTR processAffinityMask)
 {
 	BOOL		result = FALSE;
@@ -507,6 +633,37 @@ BOOL WINAPI RdtscTx(PDWORD eax, PDWORD edx, DWORD_PTR threadAffinityMask)
 	if(gIsNT)
 	{
 		SetThreadAffinityMask(hThread, mask);
+	}
+
+	return result;
+}
+
+
+BOOL WINAPI RdtscTxGroup(PDWORD eax, PDWORD edx, DWORD_PTR threadAffinityMask, WORD group)
+{
+	BOOL		result = FALSE;
+	HANDLE		hThread = NULL;
+	GROUP_AFFINITY group_affinity, last_group_affinity;
+	group_affinity.Group = group;
+	group_affinity.Mask = threadAffinityMask;
+
+	if (gIsNT)
+	{
+		hThread = GetCurrentThread();
+		if (!SetThreadGroupAffinity(hThread, &group_affinity, &last_group_affinity))
+		{
+			return FALSE;
+		}
+	}
+
+	result = Rdtsc(eax, edx);
+
+	if (gIsNT)
+	{
+		if (!SetThreadGroupAffinity(hThread, &last_group_affinity, NULL))
+		{
+			return FALSE;
+		}
 	}
 
 	return result;
@@ -591,6 +748,37 @@ BOOL WINAPI HltTx(DWORD_PTR threadAffinityMask)
 	if(gIsNT)
 	{
 		SetThreadAffinityMask(hThread, mask);
+	}
+
+	return result;
+}
+
+
+BOOL WINAPI HltTxGroup(DWORD_PTR threadAffinityMask, WORD group)
+{
+	BOOL		result = FALSE;
+	HANDLE		hThread = NULL;
+	GROUP_AFFINITY group_affinity, last_group_affinity;
+	group_affinity.Group = group;
+	group_affinity.Mask = threadAffinityMask;
+
+	if (gIsNT)
+	{
+		hThread = GetCurrentThread();
+		if (!SetThreadGroupAffinity(hThread, &group_affinity, &last_group_affinity))
+		{
+			return FALSE;
+		}
+	}
+
+	result = Hlt();
+
+	if (gIsNT)
+	{
+		if (!SetThreadGroupAffinity(hThread, &last_group_affinity, NULL))
+		{
+			return FALSE;
+		}
 	}
 
 	return result;
