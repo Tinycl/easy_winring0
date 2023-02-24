@@ -39,11 +39,15 @@ BOOL gIsNT = TRUE;
 BOOL gIsCpuid = TRUE;
 BOOL gIsMsr = TRUE;
 BOOL gIsTsc = TRUE;
-
-
 DWORD gDriverType = TRUE;
 
 
+DWORD WINAPI GetCoreNum()
+{
+	SYSTEM_INFO sysInfo;
+	GetSystemInfo(&sysInfo);
+	return sysInfo.dwNumberOfProcessors;
+}
 
 
 DWORD WINAPI GetDriverVersion(PBYTE major, PBYTE minor, PBYTE revision, PBYTE release)
@@ -845,6 +849,7 @@ BYTE WINAPI ReadIoPortByte(WORD port)
 
 	return (BYTE)value;
 }
+
 
 WORD WINAPI ReadIoPortWord(WORD port)
 {

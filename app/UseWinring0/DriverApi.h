@@ -12,7 +12,7 @@
 #include <Windows.h>
 
 
-//DWORD_PTR X64 is 64 bit, X86 is 64 bit
+//DWORD_PTR X64 is 64 bit, X86 is 32 bit
 
 #define _PHYSICAL_MEMORY_SUPPORT
 
@@ -30,22 +30,24 @@ extern DWORD gDriverType;
 extern "C" {
 #endif
 
-//-----------------------------------------------------------------------------
-// GetDriverVersion
-//-----------------------------------------------------------------------------
-DWORD // Device Driver Version, defined OLS_DRIVER_VERSION
-WINAPI GetDriverVersion(
-	PBYTE major,		// major version
-	PBYTE minor,		// minor version
-	PBYTE revision,		// revision
-	PBYTE release		// release/build
-);
+// get core num
+DWORD WINAPI GetCoreNum();
 
 //-----------------------------------------------------------------------------
-// GetDriverType
+// GetDriverVersion
+// Device Driver Version, defined OLS_DRIVER_VERSION
+// major version
+// minor version
+// revision
+// release/build
 //-----------------------------------------------------------------------------
-DWORD // Device Driver Type, defined OLS_DRIVER_TYPE_****
-WINAPI GetDriverType();
+DWORD WINAPI GetDriverVersion(PBYTE major, PBYTE minor, PBYTE revision, PBYTE release);
+
+//-----------------------------------------------------------------------------
+// GetDriverType 
+// Device Driver Type, defined OLS_DRIVER_TYPE_****
+//-----------------------------------------------------------------------------
+DWORD WINAPI GetDriverType();
 
 
 /******************************************************************************
@@ -56,42 +58,40 @@ WINAPI GetDriverType();
 
 //-----------------------------------------------------------------------------
 // IsCpuid
+// TRUE: support CPUID instruction, FALSE: not support CPUID instruction
 //-----------------------------------------------------------------------------
-BOOL // TRUE: support CPUID instruction, FALSE: not support CPUID instruction
-WINAPI IsCpuid();
+BOOL WINAPI IsCpuid();
 
 //-----------------------------------------------------------------------------
 // IsMsr
+// TRUE: support MSR(Model-Specific Register), FALSE: not support MSR
 //-----------------------------------------------------------------------------
-BOOL // TRUE: support MSR(Model-Specific Register), FALSE: not support MSR
-WINAPI IsMsr();
+BOOL WINAPI IsMsr();
 
 //-----------------------------------------------------------------------------
 // IsTsc
+// TRUE: support TSC(Time Stamp Counter), FALSE: not support TSC
 //-----------------------------------------------------------------------------
-BOOL // TRUE: support TSC(Time Stamp Counter), FALSE: not support TSC
-WINAPI IsTsc();
+BOOL WINAPI IsTsc();
 
 //-----------------------------------------------------------------------------
 // Rdmsr
+// TRUE: success, FALSE: failure
+// MSR index
+// bit  0-31
+// bit 32-63
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI Rdmsr(
-	DWORD index,					// MSR index
-	PDWORD eax,						// bit  0-31
-	PDWORD edx						// bit 32-63
-);
+BOOL WINAPI Rdmsr(DWORD index, PDWORD eax, PDWORD edx);
 
 //-----------------------------------------------------------------------------
 // RdmsrTx
+// TRUE: success, FALSE: failure
+// MSR index
+// bit  0-31
+// bit 32-63
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI RdmsrTx(
-	DWORD index,					// MSR index
-	PDWORD eax,						// bit  0-31
-	PDWORD edx,						// bit 32-63
-	DWORD_PTR threadAffinityMask
-);
+BOOL 
+WINAPI RdmsrTx(DWORD index, PDWORD eax, PDWORD edx, DWORD_PTR threadAffinityMask);
 
 //
 // group is numanode
@@ -101,144 +101,110 @@ BOOL WINAPI RdmsrTxGroup(DWORD index, PDWORD eax, PDWORD edx, DWORD_PTR threadAf
 
 //-----------------------------------------------------------------------------
 // RdmsrPx
+// TRUE: success, FALSE: failure
+// MSR index
+// bit  0-31
+// bit 32-63
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI RdmsrPx(
-	DWORD index,					// MSR index
-	PDWORD eax,						// bit  0-31
-	PDWORD edx,						// bit 32-63
-	DWORD_PTR processAffinityMask
-);
+BOOL WINAPI RdmsrPx(DWORD index, PDWORD eax, PDWORD edx, DWORD_PTR processAffinityMask);
 
 //-----------------------------------------------------------------------------
 // Wrmsr
+// TRUE: success, FALSE: failure
+// MSR index
+// bit  0-31
+// bit 32-63
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI Wrmsr(
-	DWORD index,					// MSR index
-	DWORD eax,						// bit  0-31
-	DWORD edx						// bit 32-63
-);
+BOOL WINAPI Wrmsr(DWORD index, DWORD eax, DWORD edx);
 
 //-----------------------------------------------------------------------------
 // WrmsrTx
+// TRUE: success, FALSE: failure
+// MSR index
+// bit  0-31
+// bit 32-63
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI WrmsrTx(
-	DWORD index,					// MSR index
-	DWORD eax,						// bit  0-31
-	DWORD edx,						// bit 32-63
-	DWORD_PTR threadAffinityMask
-);
+BOOL WINAPI WrmsrTx(DWORD index, DWORD eax,	DWORD edx, DWORD_PTR threadAffinityMask);
 
 //
 BOOL WINAPI WrmsrTxGroup(DWORD index, DWORD eax, DWORD edx, DWORD_PTR threadAffinityMask, WORD group);
 
 //-----------------------------------------------------------------------------
 // WrmsrPx
+// TRUE: success, FALSE: failure
+// MSR index
+// bit  0-31
+// bit 32-63
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI WrmsrPx(
-	DWORD index,					// MSR index
-	DWORD eax,						// bit  0-31
-	DWORD edx,						// bit 32-63
-	DWORD_PTR processAffinityMask
-);
+BOOL WINAPI WrmsrPx(DWORD index, DWORD eax, DWORD edx, DWORD_PTR processAffinityMask);
 
 //-----------------------------------------------------------------------------
 // Rdpmc
+// TRUE: success, FALSE: failure
+// PMC index
+// bit  0-31
+// bit 32-63
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI Rdpmc(
-	DWORD index,					// PMC index
-	PDWORD eax,						// bit  0-31
-	PDWORD edx						// bit 32-63
-);
+BOOL WINAPI Rdpmc(DWORD index, PDWORD eax, PDWORD edx);
 
 //-----------------------------------------------------------------------------
 // RdmsrTx
+// TRUE: success, FALSE: failure
+// PMC index
+// bit  0-31
+// bit 32-63
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI RdpmcTx(
-	DWORD index,					// PMC index
-	PDWORD eax,						// bit  0-31
-	PDWORD edx,						// bit 32-63
-	DWORD_PTR threadAffinityMask
-);
+BOOL WINAPI RdpmcTx(DWORD index, PDWORD eax, PDWORD edx, DWORD_PTR threadAffinityMask);
 
 //
 BOOL WINAPI RdpmcTxGroup(DWORD index, PDWORD eax, PDWORD edx, DWORD_PTR threadAffinityMask, WORD group);
 
 //-----------------------------------------------------------------------------
 // RdmsrPx
+// TRUE: success, FALSE: failure
+// PMC index
+// bit  0-31
+// bit 32-63
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI RdpmcPx(
-	DWORD index,					// PMC index
-	PDWORD eax,						// bit  0-31
-	PDWORD edx,						// bit 32-63
-	DWORD_PTR processAffinityMask
-);
+BOOL WINAPI RdpmcPx(DWORD index, PDWORD eax, PDWORD edx, DWORD_PTR processAffinityMask);
 
 //-----------------------------------------------------------------------------
 // Cpuid
+// TRUE: success, FALSE: failure
+// CPUID index
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI Cpuid(
-	DWORD index,					// CPUID index
-	PDWORD eax,
-	PDWORD ebx,
-	PDWORD ecx,
-	PDWORD edx
-);
+BOOL WINAPI Cpuid(DWORD index, PDWORD eax, PDWORD ebx, PDWORD ecx, PDWORD edx);
 
 //-----------------------------------------------------------------------------
 // CpuidTx
+// TRUE: success, FALSE: failure
+// CPUID index
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI CpuidTx(
-	DWORD index,					// CPUID index
-	PDWORD eax,
-	PDWORD ebx,
-	PDWORD ecx,
-	PDWORD edx,
-	DWORD_PTR threadAffinityMask
-);
+BOOL WINAPI CpuidTx(DWORD index, PDWORD eax, PDWORD ebx, PDWORD ecx, PDWORD edx,DWORD_PTR threadAffinityMask);
 
 //
 BOOL WINAPI CpuidTxGroup(DWORD index, PDWORD eax, PDWORD ebx, PDWORD ecx, PDWORD edx, DWORD_PTR threadAffinityMask, WORD group);
 
 //-----------------------------------------------------------------------------
 // CpuidPx
+// TRUE: success, FALSE: failure
+// CPUID index
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI CpuidPx(
-	DWORD index,					// CPUID index
-	PDWORD eax,
-	PDWORD ebx,
-	PDWORD ecx,
-	PDWORD edx,
-	DWORD_PTR processAffinityMask
-);
+BOOL WINAPI CpuidPx(DWORD index, PDWORD eax, PDWORD ebx, PDWORD ecx, PDWORD edx, DWORD_PTR processAffinityMask);
 
 //-----------------------------------------------------------------------------
 // Rdtsc
+// TRUE: success, FALSE: failure
+// bit  0-31
+// bit 32-63
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI Rdtsc(
-	PDWORD eax,						// bit  0-31
-	PDWORD edx						// bit 32-63
-);
+BOOL WINAPI Rdtsc(PDWORD eax, PDWORD edx);
 
 //-----------------------------------------------------------------------------
 // RdmsrTx
+// TRUE: success, FALSE: failure
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI RdtscTx(
-	PDWORD eax,						// bit  0-31
-	PDWORD edx,						// bit 32-63
-	DWORD_PTR threadAffinityMask
-);
+BOOL WINAPI RdtscTx(PDWORD eax,	PDWORD edx,	DWORD_PTR threadAffinityMask);
 
 //
 BOOL WINAPI RdtscTxGroup(PDWORD eax, PDWORD edx, DWORD_PTR threadAffinityMask, WORD group);
@@ -246,36 +212,25 @@ BOOL WINAPI RdtscTxGroup(PDWORD eax, PDWORD edx, DWORD_PTR threadAffinityMask, W
 //-----------------------------------------------------------------------------
 // RdmsrPx
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI RdtscPx(
-	PDWORD eax,						// bit  0-31
-	PDWORD edx,						// bit 32-63
-	DWORD_PTR processAffinityMask
-);
+BOOL WINAPI RdtscPx(PDWORD eax, PDWORD edx,	DWORD_PTR processAffinityMask);
 
 //-----------------------------------------------------------------------------
 // Hlt
+// TRUE: success, FALSE: failure
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI Hlt();
+BOOL WINAPI Hlt();
 
 //-----------------------------------------------------------------------------
 // HltTx
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI HltTx(
-	DWORD_PTR threadAffinityMask
-);
+BOOL WINAPI HltTx(DWORD_PTR threadAffinityMask);
 
 //
 BOOL WINAPI HltTxGroup(DWORD_PTR threadAffinityMask, WORD group);
 //-----------------------------------------------------------------------------
 // HltPx
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI HltTx(
-	DWORD_PTR processAffinityMask
-);
+BOOL WINAPI HltTx(DWORD_PTR processAffinityMask);
 
 /******************************************************************************
 **
@@ -286,107 +241,68 @@ WINAPI HltTx(
 //-----------------------------------------------------------------------------
 // ReadIoPortByte
 //-----------------------------------------------------------------------------
-BYTE // Read Value
-WINAPI ReadIoPortByte(
-	WORD port			// I/O port address
-);
+BYTE WINAPI ReadIoPortByte(WORD port);
 
 //-----------------------------------------------------------------------------
 // ReadIoPortWord
 //-----------------------------------------------------------------------------
-WORD // Read Value
-WINAPI ReadIoPortWord(
-	WORD port			// I/O port address
-);
+WORD WINAPI ReadIoPortWord(WORD port);
 
 //-----------------------------------------------------------------------------
 // ReadIoPortDword
 //-----------------------------------------------------------------------------
-DWORD // Read Value
-WINAPI ReadIoPortDword(
-	WORD port			// I/O port address
-);
+DWORD WINAPI ReadIoPortDword(WORD port);
 
 //-----------------------------------------------------------------------------
 // ReadIoPortByteEx
+// TRUE: success, FALSE: failure
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI ReadIoPortByteEx(
-	WORD port,			// I/O port address
-	PBYTE value			// Read Value
-);
+BOOL WINAPI ReadIoPortByteEx(WORD port,	PBYTE value);
 //-----------------------------------------------------------------------------
 // ReadIoPortWordEx
+// TRUE: success, FALSE: failure
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI ReadIoPortWordEx(
-	WORD port,			// I/O port address
-	PWORD value			// Read Value
-);
+BOOL WINAPI ReadIoPortWordEx(WORD port, PWORD value);
 //-----------------------------------------------------------------------------
 // ReadIoPortDwordEx
+// TRUE: success, FALSE: failure
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI ReadIoPortDwordEx(
-	WORD port,			// I/O port address
-	PDWORD value		// Read Value
-);
+BOOL WINAPI ReadIoPortDwordEx(WORD port, PDWORD value);
 
 //-----------------------------------------------------------------------------
 // WriteIoPortByte
 //-----------------------------------------------------------------------------
-VOID
-WINAPI WriteIoPortByte(
-	WORD port,			// I/O port address
-	BYTE value			// Write Value
-);
+VOID WINAPI WriteIoPortByte(WORD port, BYTE value);
 
 //-----------------------------------------------------------------------------
 // WriteIoPortDword
 //-----------------------------------------------------------------------------
-VOID
-WINAPI WriteIoPortDword(
-	WORD port,			// I/O port address
-	DWORD value			// Write Value
-);
+VOID WINAPI WriteIoPortDword(WORD port,	DWORD value);
 
 
 //-----------------------------------------------------------------------------
 // WriteIoPortWord
 //-----------------------------------------------------------------------------
-VOID 
-WINAPI WriteIoPortWord(
-	WORD port,			// I/O port address
-	WORD value			// Write Value
-);
+VOID WINAPI WriteIoPortWord(WORD port, WORD value);
 
 //-----------------------------------------------------------------------------
 // WriteIoPortByteEx
+// TRUE: success, FALSE: failure
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI WriteIoPortByteEx(
-	WORD port,			// I/O port address
-	BYTE value			// Write Value
-);
+BOOL WINAPI WriteIoPortByteEx(WORD port, BYTE value);
 
 //-----------------------------------------------------------------------------
 // WriteIoPortWordEx
+// TRUE: success, FALSE: failure
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI WriteIoPortWordEx(
-	WORD port,			// I/O port address
-	WORD value			// Write Value
-);
+BOOL WINAPI WriteIoPortWordEx(WORD port, WORD value);
 
 
 //-----------------------------------------------------------------------------
 // WriteIoPortDwordEx
+// TRUE: success, FALSE: failure
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI WriteIoPortDwordEx(
-	WORD port,			// I/O port address
-	DWORD value			// Write Value
-);
+BOOL WINAPI WriteIoPortDwordEx(WORD port, DWORD value);
 
 /******************************************************************************
 **
@@ -402,149 +318,116 @@ WINAPI WriteIoPortDwordEx(
 
 //-----------------------------------------------------------------------------
 // SetPciMaxBusNo
+// Max PCI Bus to Scan
 //-----------------------------------------------------------------------------
-VOID
-WINAPI SetPciMaxBusIndex(
-	BYTE max			// Max PCI Bus to Scan
-);
+VOID WINAPI SetPciMaxBusIndex(BYTE max);
 
 //-----------------------------------------------------------------------------
 // ReadPciConfigByte
+// PCI Device Address
+// Configuration Address 0-255
+// Read Value
 //-----------------------------------------------------------------------------
-BYTE // Read Value
-WINAPI ReadPciConfigByte(
-	DWORD pciAddress,	// PCI Device Address
-	BYTE regAddress		// Configuration Address 0-255
-);
+BYTE WINAPI ReadPciConfigByte(DWORD pciAddress,	BYTE regAddress);
 
 //-----------------------------------------------------------------------------
 // ReadPciConfigWord
+// Read Value
+// PCI Device Address
+// Configuration Address 0-255
 //-----------------------------------------------------------------------------
-WORD // Read Value
-WINAPI ReadPciConfigWord(
-	DWORD pciAddress,	// PCI Device Address
-	BYTE regAddress		// Configuration Address 0-255
-);
+WORD WINAPI ReadPciConfigWord(DWORD pciAddress, BYTE regAddress);
 
 //-----------------------------------------------------------------------------
 // ReadPciConfigDword
+// Read Value
+// PCI Device Address
+// Configuration Address 0-255
 //-----------------------------------------------------------------------------
-DWORD // Read Value
-WINAPI ReadPciConfigDword(
-	DWORD pciAddress,	// PCI Device Address
-	BYTE regAddress		// Configuration Address 0-255
-);
+DWORD WINAPI ReadPciConfigDword(DWORD pciAddress, BYTE regAddress);
 
 //-----------------------------------------------------------------------------
 // ReadPciConfigByteEx
+// TRUE: success, FALSE: failure
+// PCI Device Address
+// Configuration Address 0-whatever
+// Read Value
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI ReadPciConfigByteEx(
-	DWORD pciAddress,	// PCI Device Address
-	DWORD regAddress,	// Configuration Address 0-whatever
-	PBYTE value			// Read Value
-);
+BOOL WINAPI ReadPciConfigByteEx(DWORD pciAddress, DWORD regAddress,	PBYTE value);
 
 //-----------------------------------------------------------------------------
 // ReadPciConfigWordEx
+// TRUE: success, FALSE: failure
+// PCI Device Address
+// Configuration Address 0-whatever
+// Read Value
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI ReadPciConfigWordEx(
-	DWORD pciAddress,	// PCI Device Address
-	DWORD regAddress,	// Configuration Address 0-whatever
-	PWORD value			// Read Value
-);
+BOOL WINAPI ReadPciConfigWordEx(DWORD pciAddress, DWORD regAddress,	PWORD value);
 
 //-----------------------------------------------------------------------------
 // ReadPciConfigDwordEx
+// TRUE: success, FALSE: failure
+// PCI Device Address
+// Configuration Address 0-whatever
+// Read Value
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI ReadPciConfigDwordEx(
-	DWORD pciAddress,	// PCI Device Address
-	DWORD regAddress,	// Configuration Address 0-whatever
-	PDWORD value		// Read Value
-);
+BOOL WINAPI ReadPciConfigDwordEx(DWORD pciAddress, DWORD regAddress, PDWORD value);
 
 //-----------------------------------------------------------------------------
 // WritePciConfigByte
+// PCI Device Address
+// Configuration Address 0-255
+// Write Value
 //-----------------------------------------------------------------------------
-VOID
-WINAPI WritePciConfigByte(
-	DWORD pciAddress,	// PCI Device Address
-	BYTE regAddress,	// Configuration Address 0-255
-	BYTE value			// Write Value
-);
+VOID WINAPI WritePciConfigByte(DWORD pciAddress, BYTE regAddress, BYTE value);
 
 //-----------------------------------------------------------------------------
 // WritePciConfigWord
 //-----------------------------------------------------------------------------
-VOID
-WINAPI WritePciConfigWord(
-	DWORD pciAddress,	// PCI Device Address
-	BYTE regAddress,	// Configuration Address 0-255
-	WORD value			// Write Value
-);
+VOID WINAPI WritePciConfigWord(DWORD pciAddress, BYTE regAddress, WORD value);
 
 //-----------------------------------------------------------------------------
 // WritePciConfigDword
 //-----------------------------------------------------------------------------
-VOID
-WINAPI WritePciConfigDword(
-	DWORD pciAddress,	// PCI Device Address
-	BYTE regAddress,	// Configuration Address 0-255
-	DWORD value			// Write Value
-);
+VOID WINAPI WritePciConfigDword(DWORD pciAddress, BYTE regAddress,DWORD value);
 
 //-----------------------------------------------------------------------------
 // WritePciConfigByteEx
+// TRUE: success, FALSE: failure
+// PCI Device Address
+// Configuration Address 0-whatever
+// Write Value
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI WritePciConfigByteEx(
-	DWORD pciAddress,	// PCI Device Address
-	DWORD regAddress,	// Configuration Address 0-whatever
-	BYTE value			// Write Value
-);
+BOOL WINAPI WritePciConfigByteEx(DWORD pciAddress, DWORD regAddress, BYTE value);
 
 //-----------------------------------------------------------------------------
 // WritePciConfigWordEx
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI WritePciConfigWordEx(
-	DWORD pciAddress,	// PCI Device Address
-	DWORD regAddress,	// Configuration Address 0-whatever
-	WORD value			// Write Value
-);
+BOOL WINAPI WritePciConfigWordEx(DWORD pciAddress, DWORD regAddress,WORD value);
 
 //-----------------------------------------------------------------------------
 // WritePciConfigDwordEx
 //-----------------------------------------------------------------------------
-BOOL // TRUE: success, FALSE: failure
-WINAPI WritePciConfigDwordEx(
-	DWORD pciAddress,	// PCI Device Address
-	DWORD regAddress,	// Configuration Address 0-whatever
-	DWORD value			// Write Value
-);
+BOOL WINAPI WritePciConfigDwordEx(DWORD pciAddress,	DWORD regAddress, DWORD value);
 
 //-----------------------------------------------------------------------------
 // FindPciDeviceById
+// pciAddress, 0xFFFFFFFF: failure
+// Vendor ID
+// Device ID
+// Index
 //-----------------------------------------------------------------------------
-DWORD // pciAddress, 0xFFFFFFFF: failure
-WINAPI FindPciDeviceById(
-	WORD vendorId,		// Vendor ID
-	WORD deviceId,		// Device ID
-	BYTE index			// Index
-);
+DWORD WINAPI FindPciDeviceById(WORD vendorId, WORD deviceId, BYTE index);
 
 //-----------------------------------------------------------------------------
 // FindPciDeviceByClass
+// pciAddress, 0xFFFFFFFF: failure
+// Base Class
+// Sub Class
+// Program Interface
+// Index
 //-----------------------------------------------------------------------------
-DWORD // pciAddress, 0xFFFFFFFF: failure
-WINAPI FindPciDeviceByClass(
-	BYTE baseClass,		// Base Class
-	BYTE subClass,		// Sub Class
-	BYTE programIf,		// Program Interface
-	BYTE index			// Index
-);
+DWORD WINAPI FindPciDeviceByClass(BYTE baseClass, BYTE subClass, BYTE programIf, BYTE index);
 
 /******************************************************************************
 **
@@ -555,35 +438,32 @@ WINAPI FindPciDeviceByClass(
 
 //-----------------------------------------------------------------------------
 // ReadDmiMemory
+// Read size(byte), 0: failure
+// Buffer
+// Count
+// Unit Size (BYTE, WORD, DWORD)
 //-----------------------------------------------------------------------------
-DWORD // Read size(byte), 0: failure
-WINAPI ReadDmiMemory(
-	PBYTE buffer,		// Buffer
-	DWORD count,		// Count
-	DWORD unitSize		// Unit Size (BYTE, WORD, DWORD)
-);
+DWORD WINAPI ReadDmiMemory(PBYTE buffer, DWORD count,	DWORD unitSize);
 
 //-----------------------------------------------------------------------------
 // ReadPhysicalMemory
+// Read size(byte), 0: failure
+// Physical Memory Address
+// Buffer
+// Count
+// Unit Size (BYTE, WORD, DWORD)
 //-----------------------------------------------------------------------------
-DWORD // Read size(byte), 0: failure
-WINAPI ReadPhysicalMemory(
-	DWORD_PTR address,	// Physical Memory Address
-	PBYTE buffer,		// Buffer
-	DWORD count,		// Count
-	DWORD unitSize		// Unit Size (BYTE, WORD, DWORD)
-);
+DWORD WINAPI ReadPhysicalMemory(DWORD_PTR address, PBYTE buffer, DWORD count,	DWORD unitSize);
 
 //-----------------------------------------------------------------------------
 // WritePhysicalMemory
+// Write size(byte), 0: failure
+// Physical Memory Address
+// Buffer
+// Count
+// Unit Size (BYTE, WORD, DWORD)
 //-----------------------------------------------------------------------------
-DWORD // Write size(byte), 0: failure
-WINAPI WritePhysicalMemory(
-	DWORD_PTR address,	// Physical Memory Address
-	PBYTE buffer,		// Buffer
-	DWORD count,		// Count
-	DWORD unitSize		// Unit Size (BYTE, WORD, DWORD)
-);
+DWORD WINAPI WritePhysicalMemory(DWORD_PTR address,	PBYTE buffer, DWORD count, DWORD unitSize);
 
 
 
